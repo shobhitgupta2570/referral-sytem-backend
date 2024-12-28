@@ -1,30 +1,21 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
-// Purchase Schema
-const purchaseSchema = new Schema(
-  {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      required: true,
-    },
-    productId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Product',
-      required: true,
-    },
-    purchaseAmount: {
-      type: Number,
-      required: true,
-    },
-    purchaseDate: {
-      type: Date,
-      default: Date.now,
-    },
-  },
-  {
-    timestamps: true,
-  }
+const purchaseSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+  purchaseAmount: { type: Number, required: true },
+  purchaseDate: { type: Date, default: Date.now }
+},
+{
+   timestamps: true,
+}
 );
 
-export const Purchase = mongoose.model('Purchase', purchaseSchema);
+purchaseSchema.plugin(mongoosePaginate);
+
+const Purchase = mongoose.model('Purchase', purchaseSchema);
+
+export { Purchase };
+
+

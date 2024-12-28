@@ -46,6 +46,27 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+userSchema.pre('save', async function (next) { 
+  if (!this.referralCode) {
+     const generateReadableReferralCode = async () => { 
+      const adjectives = ["Cool", "Fast", "Smart", "Happy", "Lucky"]; 
+      const nouns = ["Tiger", "Eagle", "Ninja", "Wizard", "Racer"];
+      let code; 
+      let user; 
+      do { 
+        const adjective = adjectives[Math.floor(Math.random() * adjectives.length)]; 
+        const noun = nouns[Math.floor(Math.random() * nouns.length)]; 
+        const number = Math.floor(1000 + Math.random() * 9000); // random 4-digit number 
+        code = `${adjective}${noun}${number}`; 
+        user = await mongoose.model('User').findOne({ referralCode: code });
+       } while (user);
+        return code; 
+      }; 
+      this.referralCode = await generateReadableReferralCode();
+     }
+      next(); 
+    });
+
 // Check if password is correct
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
